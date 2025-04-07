@@ -49,12 +49,14 @@ const LoginScreen = () => {
   };
 
   return (
-    <div className="flex items-center justify-center min-h-screen bg-background p-4">
+    <div className="flex flex-col items-center justify-center min-h-screen bg-background p-4">
+      <div className="w-full max-w-md mb-8">
+        <h1 className="text-3xl font-bold text-[#295c07] text-center">Treez</h1>
+        <p className="text-center text-muted-foreground mt-2">Mobile Customer Manager</p>
+      </div>
+      
       <Card className="w-full max-w-md">
         <CardHeader className="space-y-1">
-          <div className="flex justify-center mb-6">
-            <h1 className="text-2xl font-bold text-[#295c07]">Treez</h1>
-          </div>
           <CardTitle className="text-xl text-center">Sign in to your account</CardTitle>
         </CardHeader>
         <CardContent>

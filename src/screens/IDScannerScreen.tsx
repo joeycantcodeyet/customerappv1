@@ -2,10 +2,10 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
-import { Card, CardContent, CardHeader, CardTitle, CardDescription, CardFooter } from '@/components/ui/card';
+import { Card, CardContent } from '@/components/ui/card';
 import { useToast } from '@/hooks/use-toast';
 import { Sheet, SheetContent, SheetDescription, SheetHeader, SheetTitle } from '@/components/ui/sheet';
-import { Camera, User, Search } from 'lucide-react';
+import { Camera, User, Search, AlertTriangle } from 'lucide-react';
 import ConnectivityWarning from '../components/ConnectivityWarning';
 
 const IDScannerScreen = () => {
@@ -47,73 +47,78 @@ const IDScannerScreen = () => {
     navigate('/customer-search');
   };
 
-  const testConnectivityIssue = () => {
-    setShowConnectivityIssue(true);
-  };
-
   return (
-    <div className="flex flex-col items-center justify-center min-h-screen bg-background p-4">
-      <Card className="w-full max-w-md">
-        <CardHeader className="space-y-1">
-          <CardTitle className="text-xl text-center">Customer Verification</CardTitle>
-          <CardDescription className="text-center">
-            Scan customer ID or search manually
-          </CardDescription>
-        </CardHeader>
-        <CardContent className="space-y-6 pt-4">
-          <Button 
-            onClick={startScan} 
-            className="w-full h-24 bg-[#295c07] hover:bg-[#265b07] text-lg"
-            disabled={isScanning}
-          >
+    <div className="flex flex-col p-4 h-full">
+      <div className="text-center mb-6">
+        <h2 className="text-xl font-semibold">Customer Check-In</h2>
+        <p className="text-muted-foreground mt-1">Scan ID or search for customer</p>
+      </div>
+      
+      <div className="space-y-6">
+        <Card className="overflow-hidden">
+          <div className="bg-muted h-56 flex flex-col items-center justify-center">
             {isScanning ? (
-              <div className="flex items-center space-x-2">
-                <div className="animate-spin rounded-full h-5 w-5 border-b-2 border-white"></div>
-                <span>Scanning...</span>
+              <div className="space-y-4 text-center">
+                <div className="animate-pulse">
+                  <Camera className="h-16 w-16 mx-auto text-muted-foreground" />
+                </div>
+                <p>Position ID in frame...</p>
+                <div className="animate-spin rounded-full h-6 w-6 border-b-2 border-[#295c07] mx-auto"></div>
               </div>
             ) : (
-              <div className="flex flex-col items-center space-y-2">
-                <Camera className="h-6 w-6" />
-                <span>Scan ID</span>
+              <div className="space-y-2 text-center">
+                <Camera className="h-16 w-16 mx-auto text-muted-foreground" />
+                <p className="text-muted-foreground">Camera preview</p>
               </div>
             )}
+          </div>
+          <CardContent className="p-4">
+            <Button 
+              onClick={startScan} 
+              className="w-full bg-[#295c07] hover:bg-[#265b07]"
+              disabled={isScanning}
+            >
+              {isScanning ? "Scanning..." : "Scan ID"}
+            </Button>
+          </CardContent>
+        </Card>
+        
+        <div className="relative flex items-center">
+          <div className="flex-grow border-t border-gray-200"></div>
+          <span className="flex-shrink mx-4 text-gray-400 text-sm">or</span>
+          <div className="flex-grow border-t border-gray-200"></div>
+        </div>
+        
+        <div className="grid grid-cols-2 gap-4">
+          <Button
+            variant="outline"
+            className="h-20 flex flex-col space-y-2 border-gray-300"
+            onClick={handleManualEntry}
+          >
+            <User className="h-5 w-5" />
+            <span>Manual Entry</span>
           </Button>
-          
-          <div className="relative flex items-center">
-            <div className="flex-grow border-t border-gray-200"></div>
-            <span className="flex-shrink mx-4 text-gray-400 text-sm">or</span>
-            <div className="flex-grow border-t border-gray-200"></div>
-          </div>
-          
-          <div className="grid grid-cols-2 gap-4">
-            <Button
-              variant="outline"
-              className="h-20 flex flex-col space-y-2"
-              onClick={handleManualEntry}
-            >
-              <User className="h-5 w-5" />
-              <span>Manual Entry</span>
-            </Button>
-            <Button
-              variant="outline"
-              className="h-20 flex flex-col space-y-2"
-              onClick={() => navigate('/customer-search')}
-            >
-              <Search className="h-5 w-5" />
-              <span>Search Customer</span>
-            </Button>
-          </div>
-
-          {/* Development only - button to test connectivity issues */}
+          <Button
+            variant="outline"
+            className="h-20 flex flex-col space-y-2 border-gray-300"
+            onClick={() => navigate('/customer-search')}
+          >
+            <Search className="h-5 w-5" />
+            <span>Search Customer</span>
+          </Button>
+        </div>
+        
+        <div className="mt-4 flex flex-col items-center justify-center">
           <Button
             variant="ghost"
             className="text-xs text-muted-foreground"
-            onClick={testConnectivityIssue}
+            onClick={() => setShowConnectivityIssue(true)}
           >
+            <AlertTriangle className="h-4 w-4 mr-2" />
             Test Connectivity Issue
           </Button>
-        </CardContent>
-      </Card>
+        </div>
+      </div>
       
       <Sheet open={showConnectivityIssue} onOpenChange={setShowConnectivityIssue}>
         <SheetContent>

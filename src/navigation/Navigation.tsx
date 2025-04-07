@@ -9,6 +9,18 @@ import CustomerCreationScreen from '../screens/CustomerCreationScreen';
 import CustomerProfileScreen from '../screens/CustomerProfileScreen';
 import { Toaster } from '@/components/ui/toaster';
 import ErrorBoundary from '@/components/ErrorBoundary';
+import MainNavbar from '@/components/MainNavbar';
+
+const AppLayout = ({ children }: { children: React.ReactNode }) => {
+  return (
+    <div className="flex flex-col min-h-screen bg-background">
+      <MainNavbar />
+      <main className="flex-grow">
+        {children}
+      </main>
+    </div>
+  );
+};
 
 const Navigation = () => {
   return (
@@ -16,11 +28,46 @@ const Navigation = () => {
       <ErrorBoundary>
         <Routes>
           <Route path="/login" element={<LoginScreen />} />
-          <Route path="/store-selection" element={<StoreSelectionScreen />} />
-          <Route path="/id-scanner" element={<IDScannerScreen />} />
-          <Route path="/customer-search" element={<CustomerSearchScreen />} />
-          <Route path="/customer-creation" element={<CustomerCreationScreen />} />
-          <Route path="/customer-profile/:id" element={<CustomerProfileScreen />} />
+          <Route 
+            path="/store-selection" 
+            element={
+              <AppLayout>
+                <StoreSelectionScreen />
+              </AppLayout>
+            } 
+          />
+          <Route 
+            path="/id-scanner" 
+            element={
+              <AppLayout>
+                <IDScannerScreen />
+              </AppLayout>
+            } 
+          />
+          <Route 
+            path="/customer-search" 
+            element={
+              <AppLayout>
+                <CustomerSearchScreen />
+              </AppLayout>
+            } 
+          />
+          <Route 
+            path="/customer-creation" 
+            element={
+              <AppLayout>
+                <CustomerCreationScreen />
+              </AppLayout>
+            } 
+          />
+          <Route 
+            path="/customer-profile/:id" 
+            element={
+              <AppLayout>
+                <CustomerProfileScreen />
+              </AppLayout>
+            } 
+          />
           <Route path="/" element={<Navigate to="/login" replace />} />
         </Routes>
         <Toaster />
