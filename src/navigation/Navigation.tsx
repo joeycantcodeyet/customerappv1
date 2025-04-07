@@ -1,6 +1,6 @@
 
-import React from 'react';
-import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom';
+import React, { useEffect } from 'react';
+import { BrowserRouter, Routes, Route, Navigate, useNavigate } from 'react-router-dom';
 import LoginScreen from '../screens/LoginScreen';
 import StoreSelectionScreen from '../screens/StoreSelectionScreen';
 import IDScannerScreen from '../screens/IDScannerScreen';
@@ -10,6 +10,20 @@ import CustomerProfileScreen from '../screens/CustomerProfileScreen';
 import { Toaster } from '@/components/ui/toaster';
 import ErrorBoundary from '@/components/ErrorBoundary';
 import MainNavbar from '@/components/MainNavbar';
+import { isAuthenticated } from '@/api/treezApi';
+
+// Protected route component
+const ProtectedRoute = ({ children }: { children: React.ReactNode }) => {
+  const navigate = useNavigate();
+  
+  useEffect(() => {
+    if (!isAuthenticated()) {
+      navigate('/login', { replace: true });
+    }
+  }, [navigate]);
+  
+  return isAuthenticated() ? <>{children}</> : null;
+};
 
 const AppLayout = ({ children }: { children: React.ReactNode }) => {
   return (
@@ -31,35 +45,50 @@ const Navigation = () => {
           <Route 
             path="/store-selection" 
             element={
-              <AppLayout>
-                <StoreSelectionScreen />
-              </AppLayout>
+              <ProtectedRoute>
+                <AppLayout>
+                  <StoreSelectionScreen />
+                </AppLayout>
+              </ProtectedRoute>
             } 
           />
           <Route 
             path="/id-scanner" 
             element={
-              <AppLayout>
-                <IDScannerScreen />
-              </AppLayout>
+              <ProtectedRoute>
+                <AppLayout>
+                  <IDScannerScreen />
+                </AppLayout>
+              </ProtectedRoute>
             } 
           />
           <Route 
             path="/customer-search" 
             element={
-              <AppLayout>
-                <CustomerSearchScreen />
-              </AppLayout>
+              <ProtectedRoute>
+                <AppLayout>
+                  <CustomerSearchScreen />
+                </AppLayout>
+              </ProtectedRoute>
             } 
           />
           {/* Customer creation screen has its own header, so it doesn't need AppLayout */}
-          <Route path="/customer-creation" element={<CustomerCreationScreen />} />
+          <Route 
+            path="/customer-creation" 
+            element={
+              <ProtectedRoute>
+                <CustomerCreationScreen />
+              </ProtectedRoute>
+            } 
+          />
           <Route 
             path="/customer-profile/:id" 
             element={
-              <AppLayout>
-                <CustomerProfileScreen />
-              </AppLayout>
+              <ProtectedRoute>
+                <AppLayout>
+                  <CustomerProfileScreen />
+                </AppLayout>
+              </ProtectedRoute>
             } 
           />
           <Route path="/" element={<Navigate to="/login" replace />} />

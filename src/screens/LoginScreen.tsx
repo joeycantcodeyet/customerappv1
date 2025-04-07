@@ -6,6 +6,7 @@ import { Label } from '@/components/ui/label';
 import { Button } from '@/components/ui/button';
 import { useToast } from '@/hooks/use-toast';
 import { Card, CardContent, CardHeader, CardTitle, CardFooter } from '@/components/ui/card';
+import { loginToTreez, storeAuthToken } from '@/api/treezApi';
 
 const LoginScreen = () => {
   const [email, setEmail] = useState('');
@@ -28,24 +29,40 @@ const LoginScreen = () => {
     
     setIsLoading(true);
     
-    // Simulate API call to Treez authentication system
-    setTimeout(() => {
-      // This is just a placeholder - we would integrate with actual Treez auth system
-      if (email === 'demo@treez.io' && password === 'password') {
+    try {
+      // Call Treez API for authentication
+      const response = await loginToTreez({ 
+        username: email, 
+        password 
+      });
+      
+      if (response.token) {
+        // Store the authentication token
+        storeAuthToken(response.token);
+        
         toast({
           title: "Success",
           description: "Login successful",
         });
+        
+        // Navigate to store selection
         navigate('/store-selection');
       } else {
         toast({
           title: "Authentication Failed",
-          description: "Invalid email or password",
+          description: "Invalid response from server",
           variant: "destructive",
         });
       }
+    } catch (error) {
+      toast({
+        title: "Authentication Failed",
+        description: error instanceof Error ? error.message : "Invalid email or password",
+        variant: "destructive",
+      });
+    } finally {
       setIsLoading(false);
-    }, 1000);
+    }
   };
 
   return (
