@@ -9,7 +9,7 @@ interface LoginCredentials {
 }
 
 interface LoginResponse {
-  token: string;
+  accessToken?: string; // Changed from token to accessToken to match API response
   user?: {
     id: string;
     name: string;
@@ -37,12 +37,16 @@ export async function loginToTreez(credentials: LoginCredentials): Promise<Login
       body: encodedData,
     });
     
+    // First check if response is ok
     if (!response.ok) {
       const errorData = await response.text();
       throw new Error(errorData || `Login failed with status: ${response.status}`);
     }
     
-    const data: LoginResponse = await response.json();
+    // Then parse the response as JSON
+    const data = await response.json();
+    
+    // Return the data for further processing
     return data;
   } catch (error) {
     console.error('Login error:', error);

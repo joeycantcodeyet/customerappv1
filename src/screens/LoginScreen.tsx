@@ -36,9 +36,12 @@ const LoginScreen = () => {
         password 
       });
       
-      if (response.token) {
+      console.log('Login response:', response);
+      
+      // Check if we have an accessToken (not token) in the response
+      if (response.accessToken) {
         // Store the authentication token
-        storeAuthToken(response.token);
+        storeAuthToken(response.accessToken);
         
         toast({
           title: "Success",
@@ -50,7 +53,7 @@ const LoginScreen = () => {
       } else {
         toast({
           title: "Authentication Failed",
-          description: "Invalid response from server",
+          description: "Invalid response from server - no access token found",
           variant: "destructive",
         });
       }
