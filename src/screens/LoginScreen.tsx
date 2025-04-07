@@ -1,0 +1,117 @@
+
+import React, { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
+import { Input } from '@/components/ui/input';
+import { Label } from '@/components/ui/label';
+import { Button } from '@/components/ui/button';
+import { useToast } from '@/hooks/use-toast';
+import { Card, CardContent, CardHeader, CardTitle, CardFooter } from '@/components/ui/card';
+
+const LoginScreen = () => {
+  const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
+  const [isLoading, setIsLoading] = useState(false);
+  const navigate = useNavigate();
+  const { toast } = useToast();
+
+  const handleLogin = async (e: React.FormEvent) => {
+    e.preventDefault();
+    
+    if (!email || !password) {
+      toast({
+        title: "Error",
+        description: "Please fill in all fields",
+        variant: "destructive",
+      });
+      return;
+    }
+    
+    setIsLoading(true);
+    
+    // Simulate API call to Treez authentication system
+    setTimeout(() => {
+      // This is just a placeholder - we would integrate with actual Treez auth system
+      if (email === 'demo@treez.io' && password === 'password') {
+        toast({
+          title: "Success",
+          description: "Login successful",
+        });
+        navigate('/store-selection');
+      } else {
+        toast({
+          title: "Authentication Failed",
+          description: "Invalid email or password",
+          variant: "destructive",
+        });
+      }
+      setIsLoading(false);
+    }, 1000);
+  };
+
+  return (
+    <div className="flex items-center justify-center min-h-screen bg-background p-4">
+      <Card className="w-full max-w-md">
+        <CardHeader className="space-y-1">
+          <div className="flex justify-center mb-6">
+            <h1 className="text-2xl font-bold text-[#295c07]">Treez</h1>
+          </div>
+          <CardTitle className="text-xl text-center">Sign in to your account</CardTitle>
+        </CardHeader>
+        <CardContent>
+          <form onSubmit={handleLogin} className="space-y-4">
+            <div className="space-y-2">
+              <Label htmlFor="email">Email</Label>
+              <Input 
+                id="email"
+                type="email"
+                placeholder="email@treez.io"
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
+                required
+              />
+            </div>
+            <div className="space-y-2">
+              <div className="flex items-center justify-between">
+                <Label htmlFor="password">Password</Label>
+                <a 
+                  href="#"
+                  onClick={(e) => {
+                    e.preventDefault();
+                    toast({
+                      title: "Password Recovery",
+                      description: "Please contact your administrator to reset your password.",
+                    });
+                  }}
+                  className="text-sm text-[#295c07] hover:underline"
+                >
+                  Forgot password?
+                </a>
+              </div>
+              <Input 
+                id="password"
+                type="password"
+                value={password}
+                onChange={(e) => setPassword(e.target.value)}
+                required
+              />
+            </div>
+            <Button 
+              type="submit" 
+              className="w-full bg-[#295c07] hover:bg-[#265b07]" 
+              disabled={isLoading}
+            >
+              {isLoading ? "Signing in..." : "Sign in"}
+            </Button>
+          </form>
+        </CardContent>
+        <CardFooter className="flex justify-center border-t pt-4">
+          <p className="text-sm text-muted-foreground">
+            Having trouble? Contact <a href="mailto:support@treez.io" className="text-[#295c07] hover:underline">support@treez.io</a>
+          </p>
+        </CardFooter>
+      </Card>
+    </div>
+  );
+};
+
+export default LoginScreen;
