@@ -52,14 +52,8 @@ const Navigation = () => {
               </AppLayout>
             } 
           />
-          <Route 
-            path="/customer-creation" 
-            element={
-              <AppLayout>
-                <CustomerCreationScreen />
-              </AppLayout>
-            } 
-          />
+          {/* Customer creation screen has its own header, so it doesn't need AppLayout */}
+          <Route path="/customer-creation" element={<CustomerCreationScreen />} />
           <Route 
             path="/customer-profile/:id" 
             element={
